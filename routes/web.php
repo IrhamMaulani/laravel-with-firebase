@@ -12,5 +12,8 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('firebase');
 });
+
+Route::get('/firebase','FireBaseController@index');
+Route::post('/firebase','FireBaseController@store');
