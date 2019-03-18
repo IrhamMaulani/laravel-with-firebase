@@ -72,7 +72,7 @@ database.ref('blog/posts').on('value', function(snapshot){
 $('#formDataBangsat').submit(function(e){
     e.preventDefault();
     $.ajax({
-        url: "http://localhost/laravel-with-firebase/public/firebase",
+        url: window.location.href + "/firebase",
         type: "POST",
         data: new FormData(this),
 		contentType: false,
