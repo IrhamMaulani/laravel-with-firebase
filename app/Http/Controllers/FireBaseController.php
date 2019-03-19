@@ -8,13 +8,12 @@ use Kreait\Firebase;
 use Kreait\Firebase\Factory;
 use Kreait\Firebase\ServiceAccount;
 
-
 class FireBaseController extends Controller
 {
-        public function store(Request $request){
-
-            $title = $request->title;
-            $body = $request->body;
+    public function store(Request $request)
+    {
+        $title = $request->title;
+        $author = $request->author;
 
         $serviceAccount = ServiceAccount::fromJsonFile(__DIR__.'/FirebaseKey.json');
         $firebase = (new Factory)
@@ -23,45 +22,45 @@ class FireBaseController extends Controller
         $database = $firebase->getDatabase();
         
         $newPost = $database
-        ->getReference('blog/posts')
+        ->getReference('Books')
         ->push([
-            'title' => $title,
-            'body' => $body
+            'Title' => $title,
+            'Author' => $author
         ]);
 
-    // $newPost->getKey(); // => -KVr5eu8gcTv7_AHb-3-
-    // $newPost->getUri(); // => https://my-project.firebaseio.com/blog/posts/-KVr5eu8gcTv7_AHb-3-
+        // $newPost->getKey(); // => -KVr5eu8gcTv7_AHb-3-
+        // $newPost->getUri(); // => https://my-project.firebaseio.com/blog/posts/-KVr5eu8gcTv7_AHb-3-
 
-    // $newPost->getChild('title')->set('Changed post title');
-    $newPost->getValue(); 
+        // $newPost->getChild('title')->set('Changed post title');
+        $newPost->getValue();
 
     
         return response()->json(['messages'=> 'Success Insert']);
     }
 
-    public function index(){
-         $serviceAccount = ServiceAccount::fromJsonFile(__DIR__.'/FirebaseKey.json');
-        $firebase = (new Factory)
-            ->withServiceAccount($serviceAccount)
-            ->create();
-        $database = $firebase->getDatabase();
+    public function index()
+    {
+//         $serviceAccount = ServiceAccount::fromJsonFile(__DIR__.'/FirebaseKey.json');
+//         $firebase = (new Factory)
+//             ->withServiceAccount($serviceAccount)
+//             ->create();
+//         $database = $firebase->getDatabase();
 
-        $ref = $database->getReference('blog/posts');
+//         $ref = $database->getReference('blog/posts');
         
         
-        $posts = $ref->getValue();
+//         $posts = $ref->getValue();
 
-        $datas = array();
+//         $datas = array();
 
-        foreach ($posts as $post) {
-            $datas[] = array(
-'title' => $post['title'],
-'body' => $post['body']
-            );
-        }
+//         foreach ($posts as $post) {
+//             $datas[] = array(
+// 'title' => $post['title'],
+// 'body' => $post['body']
+//             );
+//         }
         
          
-         return response()->json($datas);
-        
+//         return response()->json($datas);
     }
 }

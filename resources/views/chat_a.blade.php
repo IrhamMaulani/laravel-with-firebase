@@ -6,34 +6,52 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf_token" content="{{ csrf_token() }}">
     <title>Document</title>
+
+    <style>
+        .kanan{
+            text-align: right;
+            margin-right: 15px;
+            background-color: #96c786;
+            
+        }
+        div{
+            width: 50%;
+            
+        }
+         .kiri{
+            background-color: #74bbfb;
+        }
+
+        </style>
 </head>
 <body>
+    <h1>Chat A</h1>
 
-    <form id="formDataBangsat">
-          <input type="text" class="form-control" name="title" value="{{ old('title') }}" placeholder="Title">
-          <br>
-            <input type="text" class="form-control" name="author" value="{{ old('author') }}" placeholder="author">
+     <div id="tableFormData">
+        
+
+    </div>
+
+     <audio  preload="auto" id="satu" src="../suara/1.mp3"></audio>
+
+
+  <form id="form-chat">
+   <input type="text" class="form-control" name="chat" value="{{ old('chat') }}" placeholder="chat">
    @csrf
     <input type="hidden" name="_method" value="POST">
     <br>
+     <input type="hidden" name="user" value="user A">
     <button type="submit" class="btn btn-primary" name="submit" value="POST">Submit</button>
     </form>
-
-    <h1>Isi Data Firebase </h1>
-
-    <table id="tableFormData">
-        <tr>
-            <th>Title</th> 
-            <th>Body</th>
-        </tr>
-
-    </table>
-    
 </body>
+
 <script src="https://www.gstatic.com/firebasejs/5.9.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/5.9.0/firebase-database.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>
+ let suara1 = document.getElementById("satu");
+
+
 $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -51,29 +69,46 @@ $.ajaxSetup({
 firebase.initializeApp(config);
 let database = firebase.database();
 let lastIndex = 0;
-
-database.ref('Books').on('value', function(snapshot){
+    setTimeout(function () {
+database.ref('Chats/Room1').on('value', function(snapshot){
     let value = snapshot.val();
     let htmls = [];
+    let posisi = " ";
     console.log(value);
+       
     $.each(value, function(index, value){
+   
     	if(value) {
-    		htmls.push('<tr>\
-        		<td>'+ value.Title +'</td>\
-        		<td>'+ value.Author +'</td>\
-        	</tr>');
+
+            if(value.User === "user A"){
+                posisi = 'kanan';
+            }
+            else{
+               posisi = "kiri";
+            }
+    		htmls.push('<dl class ="'+ posisi +'">\
+        		<dt>'+ value.User +'</dt>\
+        		<dd>'+ value.Chat +'</dd>\
+        	</dl>');
     	}    	
     	lastIndex = index;
     });
     $('#tableFormData').html(htmls);
+
+
+     suara1.play();
+
+
     
 });
+}, 5000);
 
 
-$('#formDataBangsat').submit(function(e){
+
+$('#form-chat').submit(function(e){
     e.preventDefault();
     $.ajax({
-        url: window.location.href + "/firebase",
+        url: 'http://localhost/laravel-with-firebase/public/chat',
         type: "POST",
         data: new FormData(this),
 		contentType: false,
@@ -84,16 +119,5 @@ $('#formDataBangsat').submit(function(e){
     })
 });
 
-/* $(document).ready(function(){
-    $.ajax({
-        url: "http://localhost/laravel-with-firebase/public/firebase",
-        type: "GET",
-        success:function(data){
-            data.forEach(function(data){
-                $('#tableFormData').append('<tr><td>'+data.body+'</td><td>'+data.title+'</td></tr>');
-            })
-        }
-    })
-}) */
 </script>
 </html>

@@ -15,5 +15,17 @@ Route::get('/', function () {
     return view('firebase');
 });
 
-Route::get('/firebase','FireBaseController@index');
-Route::post('/firebase','FireBaseController@store');
+Route::get('/firebase', 'FireBaseController@index');
+Route::post('/firebase', 'FireBaseController@store');
+
+
+
+Route::post('/chat', 'ChatController@store');
+
+Route::get('/chat/a', function () {
+    return view('chat_a');
+});
+
+Route::get('/chat/b', function () {
+    return view('chat_b');
+});
